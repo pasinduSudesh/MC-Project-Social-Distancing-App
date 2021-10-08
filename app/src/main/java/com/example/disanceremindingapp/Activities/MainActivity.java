@@ -1,32 +1,26 @@
-package com.example.disanceremindingapp;
+package com.example.disanceremindingapp.Activities;
 
 import androidx.annotation.RequiresApi;
 import androidx.appcompat.app.AppCompatActivity;
 
 import android.Manifest;
-import android.app.Activity;
 import android.bluetooth.BluetoothAdapter;
 import android.bluetooth.BluetoothDevice;
 import android.bluetooth.BluetoothManager;
 import android.content.BroadcastReceiver;
 import android.content.Context;
-import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.IntentFilter;
-import android.net.ConnectivityManager;
 import android.os.Build;
 import android.os.Bundle;
 import android.view.View;
 import android.widget.ArrayAdapter;
 import android.widget.Button;
-import android.widget.ListView;
 import android.widget.Toast;
-import android.view.View.OnClickListener;
 
-import java.sql.SQLOutput;
+import com.example.disanceremindingapp.R;
+
 import java.util.ArrayList;
-
-import static android.content.DialogInterface.*;
 
 public class MainActivity extends AppCompatActivity {
 
@@ -92,7 +86,7 @@ public class MainActivity extends AppCompatActivity {
         @Override
         public void onReceive(Context context, Intent intent) {
             String action = intent.getAction();
-            System.out.println("aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa");
+            System.out.println("aaaaaaaaaaaaaaaaaaaaaa");
             // When discovery finds a new device
 //            Toast.makeText(MainActivity.this, action, Toast.LENGTH_LONG).show();
 //            if (action.equals(BluetoothAdapter.ACTION_STATE_CHANGED)) {
