@@ -38,23 +38,19 @@ public class BluetoothScanner {
         return this.bluetoothAdapter;
     }
 
-    /**
-     //Not need yet
-     //Implemented in MainActivity
     public void registerBluetoothReceiver() {
         System.out.println("************Registered");
         IntentFilter intentFilter = new IntentFilter(BluetoothDevice.ACTION_FOUND);
-        this.localBroadcastManager = LocalBroadcastManager.getInstance(this.context);
         this.broadcastReceiver = new BluetoothBroadcastReceiver();
-        this.localBroadcastManager.registerReceiver(this.broadcastReceiver, intentFilter);
+        this.context.registerReceiver(this.broadcastReceiver, intentFilter);
     }
 
     public void unregisterBluetoothReceiver(){
         System.out.println("************Unregistered");
-        if (this.broadcastReceiver != null && this.localBroadcastManager != null){
-            this.localBroadcastManager.unregisterReceiver(this.broadcastReceiver);
+        if (this.broadcastReceiver != null){
+            this.context.unregisterReceiver(this.broadcastReceiver);
         }
     }
-     **/
+
 
 }

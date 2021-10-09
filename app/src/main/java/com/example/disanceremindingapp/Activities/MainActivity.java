@@ -18,6 +18,8 @@ import android.widget.ArrayAdapter;
 import android.widget.Button;
 import android.widget.Toast;
 
+import com.example.disanceremindingapp.Models.BluetoothBroadcastReceiver;
+import com.example.disanceremindingapp.Models.BluetoothScanner;
 import com.example.disanceremindingapp.R;
 
 import java.util.ArrayList;
@@ -33,14 +35,19 @@ public class MainActivity extends AppCompatActivity {
 //    BluetoothManager bluetoothManager =  (BluetoothManager) ;
 //    BluetoothAdapter BTAdapteqr = bluetoothManager.getAdapter();
     BluetoothAdapter BTAdapter ;
+    BluetoothScanner btSacnner;
+    BroadcastReceiver receiver;
 
     @RequiresApi(api = Build.VERSION_CODES.M)
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
-        BluetoothManager bluetoothManager =  (BluetoothManager) getSystemService(MainActivity.this.BLUETOOTH_SERVICE);
-        this.BTAdapter = bluetoothManager.getAdapter();
+
+        this.btSacnner = new BluetoothScanner(MainActivity.this);
+        this.BTAdapter = this.btSacnner.getBluetoothAdapter();
+
+
 
         int permissionCheck = this.checkSelfPermission("Manifest.permission.ACCESS_FINE_LOCATION");
         permissionCheck += this.checkSelfPermission("Manifest.permission.ACCESS_COARSE_LOCATION");
@@ -50,27 +57,18 @@ public class MainActivity extends AppCompatActivity {
         }
 
         scanButton = (Button) findViewById(R.id.button2);
-//        listView = (ListView) findViewById(R.id.listView);
 
         scanButton.setOnClickListener(new View.OnClickListener(){
 
             @Override
             public void onClick(View v) {
                 BTAdapter.startDiscovery();
-                System.out.println("helollllll");
+                System.out.println("Scanning Devices");
                 Toast.makeText(MainActivity.this, "Scanning Devices", Toast.LENGTH_LONG).show();
             }
         });
 
-        IntentFilter intentFilter = new IntentFilter(BluetoothDevice.ACTION_FOUND);
-//        intentFilter.addAction(BluetoothDevice.ACTION_ACL_DISCONNECTED);
-//        intentFilter.addAction(BluetoothAdapter.ACTION_CONNECTION_STATE_CHANGED);
-//        intentFilter.addAction(BluetoothAdapter.ACTION_STATE_CHANGED);
-        registerReceiver(receiver, intentFilter);
-        System.out.println("helollllllxasxax vs dsd");
-//
-//        arrayAdapter= new ArrayAdapter<String>(getApplicationContext(), android.R.layout.simple_list_item_1, stringArrayList);
-//        listView.setAdapter(arrayAdapter);
+        this.btSacnner.registerBluetoothReceiver();
 
     }
 
@@ -78,41 +76,7 @@ public class MainActivity extends AppCompatActivity {
     protected void onDestroy() {
         // TODO Auto-generated method stub
         super.onDestroy();
-        unregisterReceiver(receiver);
+        this.btSacnner.unregisterBluetoothReceiver();
     }
 
-    BroadcastReceiver receiver = new BroadcastReceiver(){
-
-        @Override
-        public void onReceive(Context context, Intent intent) {
-            String action = intent.getAction();
-            System.out.println("aaaaaaaaaaaaaaaaaaaaaa");
-            // When discovery finds a new device
-//            Toast.makeText(MainActivity.this, action, Toast.LENGTH_LONG).show();
-//            if (action.equals(BluetoothAdapter.ACTION_STATE_CHANGED)) {
-//                final int state = intent.getIntExtra(BluetoothAdapter.EXTRA_STATE, BluetoothAdapter.ERROR);
-//                Toast.makeText(MainActivity.this, state, Toast.LENGTH_LONG).show();
-//            }
-            if (BluetoothDevice.ACTION_FOUND.equals(action)) {
-                // Get the BluetoothDevice object from the Intent
-                BluetoothDevice device = intent.getParcelableExtra(BluetoothDevice.EXTRA_DEVICE);
-                int rssi = intent.getShortExtra(BluetoothDevice.EXTRA_RSSI,Short.MIN_VALUE);
-                float d = 10 ^ ((-69 - rssi)/20);
-                Toast.makeText(MainActivity.this, "name: " + device.getName() + " " + device.getAddress() + "distance: "+ d, Toast.LENGTH_LONG).show();
-                if (!foundDevices.contains(device)) {
-                    foundDevices.add(device);
-
-//                    btArrayAdapter.notifyDataSetChanged();
-                }
-
-            }
-
-            // When discovery cycle finished
-            if (BluetoothAdapter.ACTION_DISCOVERY_FINISHED.equals(action)) {
-                if (foundDevices == null || foundDevices.isEmpty()) {
-                    Toast.makeText(MainActivity.this, "No Devices", Toast.LENGTH_LONG).show();
-                }
-            }
-        }
-    };
 }
