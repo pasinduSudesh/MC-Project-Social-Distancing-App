@@ -14,7 +14,7 @@ import static android.content.Context.BLUETOOTH_SERVICE;
 public class BluetoothScanner {
     Context context;
     BluetoothAdapter bluetoothAdapter;
-    BroadcastReceiver broadcastReceiver;
+    BluetoothBroadcastReceiver  broadcastReceiver;
     LocalBroadcastManager localBroadcastManager;
 
     BluetoothScanner() {
@@ -51,6 +51,10 @@ public class BluetoothScanner {
         if (this.broadcastReceiver != null){
             this.context.unregisterReceiver(this.broadcastReceiver);
         }
+    }
+
+    public boolean getIsFinishedDiscovery(){
+        return this.broadcastReceiver.getIsFinishedDiscovery();
     }
 
 

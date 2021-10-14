@@ -16,10 +16,12 @@ import static android.content.Context.MODE_PRIVATE;
 
 public class BluetoothBroadcastReceiver extends BroadcastReceiver {
     ArrayList<BluetoothDevice> foundDevices = new ArrayList<BluetoothDevice>();
+    boolean isFinishedDiscovery = true;
     @Override
     public void onReceive(Context context, Intent intent) {
         String action = intent.getAction();
         System.out.println("Action "+ action);
+        this.isFinishedDiscovery = false;
         if (BluetoothDevice.ACTION_FOUND.equals(action)) {
             BluetoothDevice device = intent.getParcelableExtra(BluetoothDevice.EXTRA_DEVICE);
             int rssi = intent.getShortExtra(BluetoothDevice.EXTRA_RSSI,Short.MIN_VALUE);
@@ -29,6 +31,7 @@ public class BluetoothBroadcastReceiver extends BroadcastReceiver {
         if (BluetoothAdapter.ACTION_DISCOVERY_FINISHED.equals(action)) {
             // if no devices found in a search
             System.out.println("Closed Discovery");
+            this.isFinishedDiscovery = true;
         }
     }
 
@@ -41,5 +44,9 @@ public class BluetoothBroadcastReceiver extends BroadcastReceiver {
         /**
          * Have to implement save devices in local storage
          */
+    }
+
+    public boolean getIsFinishedDiscovery(){
+        return this.isFinishedDiscovery;
     }
 }
