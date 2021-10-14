@@ -41,6 +41,7 @@ public class BluetoothScanner {
     public void registerBluetoothReceiver() {
         System.out.println("************Registered*********");
         IntentFilter intentFilter = new IntentFilter(BluetoothDevice.ACTION_FOUND);
+        intentFilter.addAction(BluetoothAdapter.ACTION_DISCOVERY_FINISHED);
         this.broadcastReceiver = new BluetoothBroadcastReceiver();
         this.context.registerReceiver(this.broadcastReceiver, intentFilter);
     }
