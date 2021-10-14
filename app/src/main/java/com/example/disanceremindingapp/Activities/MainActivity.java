@@ -2,7 +2,9 @@ package com.example.disanceremindingapp.Activities;
 
 import androidx.annotation.RequiresApi;
 import androidx.appcompat.app.AppCompatActivity;
+
 import com.example.disanceremindingapp.Models.*;
+
 import android.Manifest;
 import android.bluetooth.BluetoothAdapter;
 import android.bluetooth.BluetoothDevice;
@@ -34,9 +36,11 @@ public class MainActivity extends AppCompatActivity {
     ArrayAdapter<String> arrayAdapter;
 
 
-    BluetoothAdapter BTAdapter ;
+    BluetoothAdapter BTAdapter;
     BluetoothScanner btScanner;
     private Object BluetoothScanService;
+
+    private boolean scanStarted = false;
 
 
     @RequiresApi(api = Build.VERSION_CODES.M)
@@ -53,27 +57,53 @@ public class MainActivity extends AppCompatActivity {
             this.requestPermissions(new String[]{Manifest.permission.ACCESS_FINE_LOCATION, Manifest.permission.ACCESS_COARSE_LOCATION}, 1001); //Any number
         }
 
-        // Create bluetooth adapter
-//        this.btScanner = new BluetoothScanner(MainActivity.this);
-//        this.BTAdapter = this.btScanner.getBluetoothAdapter();
 
         scanButton = (Button) findViewById(R.id.button2);
-        scanButton.setOnClickListener(new View.OnClickListener(){
+        scanButton.setOnClickListener(new View.OnClickListener() {
 
 
             @Override
             public void onClick(View v) {
-//                BTAdapter.startDiscovery();
-                BluetoothScanService bss = new BluetoothScanService();
-                startService(new Intent(MainActivity.this, BluetoothScanService.class));
-//                startService(new Intent());
-                System.out.println("Scanning Devices");
-                Toast.makeText(MainActivity.this, "Scanning Devices", Toast.LENGTH_LONG).show();
+
+                if(scanStarted){
+                    //scan is started
+                    scanButton.setText("Scan");
+                    scanStarted = false;
+                    stopService(new Intent(MainActivity.this, BluetoothScanService.class));
+
+                }else{
+                    //scan is not started
+                    scanButton.setText("Checking Bluetooth");
+                    boolean canStartScan = checkBluetooth();
+
+                    if (canStartScan){
+                        scanStarted = true;
+                        scanButton.setText("Stop Scan");
+                        startService(new Intent(MainActivity.this, BluetoothScanService.class));
+
+                    }else{
+                        scanStarted = false;
+                        scanButton.setText("Scan");
+                        Toast.makeText(MainActivity.this, "Please turn on Bluetooth", Toast.LENGTH_LONG).show();
+                    }
+
+
+                }
+
+
+
+
+
+
+
+
+
+//                startService(new Intent(MainActivity.this, BluetoothScanService.class));
+//                System.out.println("Scanning Devices");
+//                Toast.makeText(MainActivity.this, "Scanning Devices", Toast.LENGTH_LONG).show();
+
             }
         });
-
-        //register bluetooth scanner
-//        this.btScanner.registerBluetoothReceiver();
 
     }
 
@@ -82,6 +112,10 @@ public class MainActivity extends AppCompatActivity {
         // TODO Auto-generated method stub
         super.onDestroy();
 //        this.btScanner.unregisterBluetoothReceiver();
+    }
+
+    public boolean checkBluetooth(){
+        return true;
     }
 
 }

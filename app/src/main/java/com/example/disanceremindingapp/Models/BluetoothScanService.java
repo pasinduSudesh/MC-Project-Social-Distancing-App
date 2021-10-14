@@ -15,6 +15,7 @@ public class BluetoothScanService extends Service {
 
     BluetoothAdapter BTAdapter ;
     BluetoothScanner btScanner;
+    Thread btScannerThread;
 
 //    public void BluetoothScanService(Context context){
 //
@@ -27,7 +28,7 @@ public class BluetoothScanService extends Service {
         this.btScanner.registerBluetoothReceiver();
 
 
-        new Thread(){
+        this.btScannerThread = new Thread(){
             @Override
             public void run() {
                 try {
@@ -36,7 +37,8 @@ public class BluetoothScanService extends Service {
                     e.printStackTrace();
                 }
             }
-        }.start();
+        };
+        this.btScannerThread.start();
 
         return  START_STICKY;
     }
@@ -45,6 +47,7 @@ public class BluetoothScanService extends Service {
     public void onDestroy() {
         super.onDestroy();
         this.btScanner.unregisterBluetoothReceiver();
+        this.btScannerThread.interrupt();
     }
 
     @Override
@@ -60,9 +63,11 @@ public class BluetoothScanService extends Service {
 
     public void scann() throws InterruptedException {
         while (true){
-            this.BTAdapter.startDiscovery();
-            System.out.println("Start Discovery");
-            Thread.sleep(100000);
+            if (this.btScanner.getIsFinishedDiscovery()){
+                this.BTAdapter.startDiscovery();
+                System.out.println("Start Discovery");
+            }
+            Thread.sleep(10*1000);
 
         }
     }
