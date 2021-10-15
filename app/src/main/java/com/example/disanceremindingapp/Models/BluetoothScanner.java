@@ -9,6 +9,8 @@ import android.content.IntentFilter;
 
 import androidx.localbroadcastmanager.content.LocalBroadcastManager;
 
+import java.util.List;
+
 import static android.content.Context.BLUETOOTH_SERVICE;
 
 public class BluetoothScanner {
@@ -16,6 +18,8 @@ public class BluetoothScanner {
     BluetoothAdapter bluetoothAdapter;
     BluetoothBroadcastReceiver  broadcastReceiver;
     LocalBroadcastManager localBroadcastManager;
+    LocalDB localDB;
+
 
     BluetoothScanner() {
         this.bluetoothAdapter = null;
@@ -24,6 +28,7 @@ public class BluetoothScanner {
 
     public BluetoothScanner(Context context) {
         this.context = context;
+        this.localDB = new LocalDB(this.context);
     }
 
     public BluetoothAdapter getBluetoothAdapter(Context context) {
@@ -42,7 +47,7 @@ public class BluetoothScanner {
         System.out.println("************Registered*********");
         IntentFilter intentFilter = new IntentFilter(BluetoothDevice.ACTION_FOUND);
         intentFilter.addAction(BluetoothAdapter.ACTION_DISCOVERY_FINISHED);
-        this.broadcastReceiver = new BluetoothBroadcastReceiver();
+        this.broadcastReceiver = new BluetoothBroadcastReceiver(localDB);
         this.context.registerReceiver(this.broadcastReceiver, intentFilter);
     }
 
@@ -51,10 +56,15 @@ public class BluetoothScanner {
         if (this.broadcastReceiver != null){
             this.context.unregisterReceiver(this.broadcastReceiver);
         }
+        this.localDB.close();
     }
 
     public boolean getIsFinishedDiscovery(){
         return this.broadcastReceiver.getIsFinishedDiscovery();
+    }
+
+    public List<Device> getAvailableDevices(){
+        return this.broadcastReceiver.getAvailableDevices();
     }
 
 
