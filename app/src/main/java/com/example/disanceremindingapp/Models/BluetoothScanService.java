@@ -71,4 +71,8 @@ public class BluetoothScanService extends Service {
 
         }
     }
+
+    public void aaa(){
+
+    }
 }
